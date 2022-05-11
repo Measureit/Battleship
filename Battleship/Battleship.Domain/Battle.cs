@@ -30,7 +30,9 @@ namespace Battleship.Domain
                         input
                             .Where(shot => _matrix.ContainsKey(shot))
                             .Do(Fire)
-                            .Select(shot => _matrix));
+                            .Select(shot => _matrix))
+                    .TakeUntil(a => _ships.Any(x => x.IsSunk));
+
         }
 
         public void Fire(Point shot)

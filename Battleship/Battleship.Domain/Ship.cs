@@ -9,7 +9,7 @@ namespace Battleship.Domain
     {
         public IEnumerable<Point> Positions => _positions.Keys.AsEnumerable();
         private readonly IDictionary<Point, bool> _positions;
-        public Ship(List<Point> positions)
+        public Ship(IEnumerable<Point> positions)
         {
             _positions = positions.ToDictionary(point => point, point => false);
         }

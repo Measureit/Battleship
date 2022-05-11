@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace Battleship.Domain.Services
 {
@@ -8,71 +9,52 @@ namespace Battleship.Domain.Services
     {
         IEnumerable<Ship> GenerateShips(int rows, int columns, IEnumerable<int> ships);
     }
+
     public class ShipsGenerator : IShipsGenerator
     {
         private readonly Random random = new Random();
+
+        private IEnumerable<Point> GenerateShipPoints(int rows, int columns, int size)
+        {
+            int direction = random.Next(1, 3);
+            int row = random.Next(1, rows + 1);
+            int col = random.Next(1, columns + 1);
+
+            if (direction % 2 != 0)
+            {
+                for (int i = 0; i < size; i++)
+                {
+                    yield return new Point(row - size > 0 ? row - i : row + i, col);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < size; i++)
+                {
+                    yield return new Point(row, col - size > 0 ? col - i : col + i);
+                }
+            }
+        }
+
         public IEnumerable<Ship> GenerateShips(int rows, int columns, IEnumerable<int> ships)
         {
+            var result = new List<Ship>(ships.Count());
+            foreach (var size in ships)
+            {
+                IEnumerable<Point> positions;
+                do
+                {
+                    positions = GenerateShipPoints(rows, columns, size);
+                } 
+                while (
+                    positions
+                         .Intersect(result.SelectMany(x => x.Positions))
+                         .Any());
 
-            //int direction = random.Next(1, size);
-            //foreach(var size in ships)
-            //{
-            //    int row = random.Next(1, rows);
-            //    int col = random.Next(1, columns  );
-            //}
-            //    
+                result.Add(new Ship(positions));
+            }
 
-            //    if (direction % 2 != 0)
-            //    {
-            //        //left first, then right
-            //        if (row - size > 0)
-            //        {
-            //            for (int i = 0; i < size; i++)
-            //            {
-            //                Position pos = new Position();
-            //                pos.x = row - i;
-            //                pos.y = col;
-            //                positions.Add(pos);
-            //            }
-            //        }
-            //        else // row
-            //        {
-            //            for (int i = 0; i < size; i++)
-            //            {
-            //                Position pos = new Position();
-            //                pos.x = row + i;
-            //                pos.y = col;
-            //                positions.Add(pos);
-            //            }
-            //        }
-            //    }
-            //    else
-            //    {
-            //        //top first, then bottom
-            //        if (col - size > 0)
-            //        {
-            //            for (int i = 0; i < size; i++)
-            //            {
-            //                Position pos = new Position();
-            //                pos.x = row;
-            //                pos.y = col - i;
-            //                positions.Add(pos);
-            //            }
-            //        }
-            //        else // row
-            //        {
-            //            for (int i = 0; i < size; i++)
-            //            {
-            //                Position pos = new Position();
-            //                pos.x = row;
-            //                pos.y = col + i;
-            //                positions.Add(pos);
-            //            }
-            //        }
-            //    }
-            //    return positions;
-            //}
-            return new List<Ship>() { new Ship(new List<Point>() { new Point(1, 1) }) };
+            return result;
         }
     }
 }
