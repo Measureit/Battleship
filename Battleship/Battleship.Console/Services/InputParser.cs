@@ -9,8 +9,7 @@ namespace Battleship.Console.Services
         {
             var trimedLine = line.Trim();
             int y = char.ToUpper(trimedLine.First()) - 64;
-            var x = int.Parse(trimedLine.Substring(1));
-            return new Point(x, y);
+            return int.TryParse(trimedLine.Substring(1), out int x) ? new Point(x, y) : new Point(-1, y);
         }
     }
 }

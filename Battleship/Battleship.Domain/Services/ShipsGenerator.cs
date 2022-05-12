@@ -17,8 +17,8 @@ namespace Battleship.Domain.Services
         private IEnumerable<Point> GenerateShipPoints(int rows, int columns, int size)
         {
             int direction = random.Next(1, 3);
-            int row = random.Next(1, rows + 1);
-            int col = random.Next(1, columns + 1);
+            int row = random.Next(1, rows );
+            int col = random.Next(1, columns);
 
             if (direction % 2 != 0)
             {
@@ -44,16 +44,11 @@ namespace Battleship.Domain.Services
                 IEnumerable<Point> positions;
                 do
                 {
-                    positions = GenerateShipPoints(rows, columns, size);
-                } 
-                while (
-                    positions
-                         .Intersect(result.SelectMany(x => x.Positions))
-                         .Any());
+                    positions = GenerateShipPoints(rows, columns, size).ToList();
+                } while (result.SelectMany(x => x.Positions).Intersect(positions).Any());
 
                 result.Add(new Ship(positions));
             }
-
             return result;
         }
     }

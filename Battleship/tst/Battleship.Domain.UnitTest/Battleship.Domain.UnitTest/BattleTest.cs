@@ -2,6 +2,7 @@ using Microsoft.Reactive.Testing;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using Xunit;
@@ -58,9 +59,11 @@ namespace Battleship.Domain.UnitTest
             input.OnNext(shipPosition);
 
             // Assert
-            Assert.Equal(observer.Messages.Count, 2);
+            Assert.Equal(2 , observer.Messages.Count(m => m.Value.Kind == NotificationKind.OnNext));
+            
             Assert.Equal(observer
                 .Messages
+                .Where(m => m.Value.Kind == NotificationKind.OnNext)
                 .Last()
                 .Value
                 .Value[shipPosition], CellStateEnum.Sunk);

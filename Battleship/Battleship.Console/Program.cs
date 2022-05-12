@@ -2,6 +2,7 @@
 using Battleship.Domain.Builders;
 using System;
 using System.Linq;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 
 var parser = new CoordinateParser();
@@ -13,13 +14,15 @@ var input = Observable
     .Publish()
     .RefCount();
 
-var printer = new BattlePrinter();
-new BattleBuilder()
-    .WithRows(1)
-    .WithColumns(1)
-    //.AddShip(5) // Battleship
-    //.AddShip(4) // 1 x Destroyers
-    .AddShip(1) // 1 x Destroyers
+var stream = new BattleBuilder()
+    .WithRows(10)
+    .WithColumns(10)
+    .AddShip(5) // Battleship
+    .AddShip(4) // 1 x Destroyers
+    .AddShip(4) // 1 x Destroyers
     .Build()
-    .Start(input)
+    .Start(input);
+
+var subscription = stream
     .Subscribe(new BattlePrinter());
+

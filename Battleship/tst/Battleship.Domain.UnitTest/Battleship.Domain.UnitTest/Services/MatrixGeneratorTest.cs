@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Battleship.Domain.UnitTest.Services
 {
-    public class MatrixGeneratorTest 
+    public class ShipsGeneratorTest 
     {
         public static IEnumerable<object[]> Matrix =>
               new List<object[]>
@@ -24,13 +24,13 @@ namespace Battleship.Domain.UnitTest.Services
 
         [Theory]
         [MemberData(nameof(Matrix))]
-        public void MatrixGenerator_GenerateMatrix(int rows, int colums, IList<Point> expected)
+        public void MatrixGenerator_GenerateMatrix(int rows, int columns, IList<Point> expected)
         {
             // Arrange
             var matrixGenerator = new MatrixGenerator();
 
             // Act
-            var result = matrixGenerator.GenerateMatrix(rows, colums);
+            var result = matrixGenerator.GenerateMatrix(rows, columns);
 
             // Assert
             Assert.Equal(expected, result);

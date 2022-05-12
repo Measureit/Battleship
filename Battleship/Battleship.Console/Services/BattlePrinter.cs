@@ -12,7 +12,8 @@ namespace Battleship.Console.Services
         private const int HeaderPadding = 3;
         public void OnCompleted()
         {
-            System.Console.WriteLine("Game Finished!");
+            System.Console.WriteLine("Winner!");
+            System.Console.WriteLine("One more time? Type 'start'");
         }
 
         public void OnError(Exception error)
